@@ -1,0 +1,81 @@
+{% macro sitefield(site, key, tag) -%}
+    {%- for date in dates -%}
+        <td>
+        {%- if counts[site][date] -%}
+            {{ counts[site][date][key] }}
+        {%- else -%}
+            -
+        {%- endif -%}
+        </td>
+    {%- endfor -%}
+{%- endmacro -%}
+{% macro sitelink(dbname, text, extra_url='') -%}
+    <a href="{{ sites[dbname] }}{{ extra_url }}">{{ text }}</a>
+{%- endmacro -%}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Edit Check usage dashboard</title>
+    <style type="text/css">
+        table {
+            width: 100%;
+            border-collapse: separate !important;
+            border-spacing: 0 !important;
+            border-width: 1px 0 0 1px !important;
+        }
+        table, table th, table td {
+            border: 1px solid #a5acb3;
+        }
+        table th {
+            background: #e9ecf1;
+        }
+        table th, table td {
+            border-width: 0 1px 1px !important;
+        }
+        thead th {
+            white-space: nowrap;
+            writing-mode: vertical-rl;
+            padding: 0.2em 0;
+        }
+        thead th:first-child {
+            writing-mode: horizontal-tb;
+        }
+        thead tr {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        table tr.odd {
+            background: #eeeeee;
+        }
+    </style>
+</head>
+<body>
+    <h1>Edit Check usage</h1>
+    <h2>{{ dates[0] }} to {{ dates[-1] }}</h2>
+    <table>
+        <thead><th colspan="2">Site</th>{% for date in dates %}<th>{{ date }}</th>{% endfor %}</thead>
+        <tbody>
+        {%- for site in counts %}
+            <tr class="{{ loop.cycle('odd', 'even') }}">
+                <th rowspan="3">{{ sitelink(site, site) }}</th>
+                <th>{{ sitelink(site, 'eligible', '/wiki/Special:RecentChanges?days=30&tagfilter=editcheck-references') }}</th>
+                {{ sitefield(site, 'eligible') }}
+            </tr>
+            <tr class="{{ loop.cycle('odd', 'even') }}">
+                <th>{{ sitelink(site, 'activated', '/wiki/Special:RecentChanges?days=30&tagfilter=editcheck-references-activated') }}</th>
+                {{ sitefield(site, 'activated') }}
+            </tr>
+            <tr class="{{ loop.cycle('odd', 'even') }}">
+                <th>{{ sitelink(site, 'added', '/wiki/Special:RecentChanges?days=30&tagfilter=editcheck-newreference') }}</th>
+                {{ sitefield(site, 'added') }}
+            </tr>
+        {%- endfor %}
+        </tbody>
+    </table>
+    {#<pre>{{ counts|pprint }}</pre>#}
+</body>
+</html>
