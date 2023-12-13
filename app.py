@@ -12,8 +12,8 @@ app = flask.Flask(__name__)
 
 @app.route('/')
 def index():
-    from_date = datetime.date.today() - datetime.timedelta(days=30)
-    to_date = datetime.date.today()
+    from_date = datetime.date.today() - datetime.timedelta(days=31)
+    to_date = datetime.date.today() - datetime.timedelta(days=1)
 
     counts = database.fetch_sitecounts(from_date, to_date)
     sites = database.fetch_sites()
