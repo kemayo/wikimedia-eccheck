@@ -35,6 +35,10 @@ def query_continue(site: str, **kwargs) -> dict:
     return out
 
 
+def _yesterday() -> datetime.date:
+    return datetime.date.today() - datetime.timedelta(days=1)
+
+
 def fetch(from_date: datetime.date = False, to_date: datetime.date = False, onlysite: str = False):
     connection = database.get()
     cursor = connection.cursor()
@@ -74,8 +78,8 @@ def fetch(from_date: datetime.date = False, to_date: datetime.date = False, only
             rctag='editcheck-references',
             rcprop='ids|timestamp|title|tags|sizes',
             # recent changes goes backwards, so the start is the most-recent date
-            rcstart=(to_date or datetime.date.today()).isoformat() + 'T23:59:59Z',
-            rcend=(from_date or datetime.date.today()).isoformat() + 'T00:00:00Z',
+            rcstart=(to_date or _yesterday()).isoformat() + 'T23:59:59Z',
+            rcend=(from_date or _yesterday()).isoformat() + 'T00:00:00Z',
             rclimit='100',
         )
         # print(recentchanges)
@@ -102,10 +106,3 @@ if __name__ == '__main__':
     parser.add_argument('--from', type=datetype, dest='from_date', help="Earliest date to fetch")
     args = parser.parse_args()
     fetch(from_date=args.from_date, to_date=args.to_date, onlysite=args.site)
-
-    # from_date, to_date = False, False
-    # if len(sys.argv) == 3:
-    #     from_date, to_date = sys.argv[1:]
-    #     from_date = datetime.date.fromisoformat(from_date)
-    #     to_date = datetime.date.fromisoformat(to_date)
-    # fetch(from_date, to_date)
