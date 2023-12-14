@@ -70,7 +70,7 @@ def fetch(from_date: datetime.date = False, to_date: datetime.date = False, only
     for dbname, site in allsites.items():
         if onlysite and dbname != onlysite:
             continue
-        print("Fetching data from", dbname)
+        print("Fetching data from", dbname, "from", from_date, "to", to_date)
         recentchanges = query_continue(site['url'],
             action='query',
             list='recentchanges',
