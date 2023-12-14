@@ -2,7 +2,7 @@
 
 import datetime
 import flask
-from flask import render_template
+from flask import render_template, request
 
 import database
 
@@ -21,4 +21,18 @@ def index():
     # Convenient list for the table-building:
     dates = [(from_date + datetime.timedelta(days=x + 1)).isoformat() for x in range((to_date - from_date).days)]
 
-    return render_template('index.html', counts=counts, dates=dates, sites=sites)
+    return render_template('index.html',
+        counts=counts, dates=dates, sites=sites, all=request.args.get('all') == '1')
+
+
+@app.template_filter('site_activated')
+def site_activated_filter(sites, allow_all):
+    if allow_all:
+        return sites
+    def has_activated(item):
+        dbname, counts = item
+        for count in counts.values():
+            if count['activated']:
+                return True
+        return False
+    return dict((filter(has_activated, sites.items())))

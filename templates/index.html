@@ -51,15 +51,46 @@
         table tr.odd {
             background: #eeeeee;
         }
+        ul {
+            list-style: none;
+            display: flex;
+            padding: 0;
+        }
+        ul li {
+            border: 1px solid #eee;
+            padding: 1ex;
+        }
+        ul li:first-child {
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+        }
+        ul li:last-child {
+            border-top-right-radius: 6px;
+            border-bottom-right-radius: 6px;
+        }
+        ul li:hover {
+            box-shadow: inset 0 0 10px #ccc;
+        }
+        ul li.active {
+            background: #eee;
+            box-shadow: inset 0 0 10px #ccc;
+        }
+        ul li a {
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
     <h1>Edit Check usage</h1>
     <h2>{{ dates[0] }} to {{ dates[-1] }}</h2>
+    <ul>
+        <li class="{{ all and 'active' or '' }}"><a href="/?all=1">All sites</a></li>
+        <li class="{{ all and ' ' or 'active' }}"><a href="/">Activated sites</a></li>
+    </ul>
     <table>
         <thead><th colspan="2">Site</th>{% for date in dates %}<th>{{ date }}</th>{% endfor %}</thead>
         <tbody>
-        {%- for site in counts %}
+        {%- for site in counts|site_activated(all) %}
             <tr class="{{ loop.cycle('odd', 'even') }}">
                 <th rowspan="3">{{ sitelink(site, site) }}</th>
                 <th>{{ sitelink(site, 'eligible', '/wiki/Special:RecentChanges', {'days':30,'tagfilter':'editcheck-references'}) }}</th>
