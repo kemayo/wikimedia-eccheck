@@ -1,4 +1,5 @@
-{% macro sitefield(site, key, tag) -%}
+{% macro sitefield(site, key) -%}
+    <td class="total">{{ counts[site].total[key] or 0 }}</td>
     {%- for date in dates -%}
         <td>
         {%- if counts[site][date] -%}
@@ -28,6 +29,7 @@
         }
         table, table th, table td {
             border: 1px solid #a5acb3;
+            text-align: center;
         }
         table th {
             background: #e9ecf1;
@@ -50,6 +52,13 @@
         }
         table tr.odd {
             background: #eeeeee;
+        }
+        tbody td.total {
+            border-right: 1px solid #000;
+            background: #dddddd;
+        }
+        tbody tr.odd td.total {
+            background: #cccccc;
         }
         ul {
             list-style: none;
@@ -88,7 +97,7 @@
         <li class="{{ all and ' ' or 'active' }}"><a href="/">Activated sites</a></li>
     </ul>
     <table>
-        <thead><th colspan="2">Site</th>{% for date in dates %}<th>{{ date }}</th>{% endfor %}</thead>
+        <thead><th colspan="2">Site</th><th>Total</th>{% for date in dates %}<th>{{ date }}</th>{% endfor %}</thead>
         <tbody>
         {%- for site in counts|site_activated(all) %}
             <tr class="{{ loop.cycle('odd', 'even') }}">
