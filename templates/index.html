@@ -9,8 +9,8 @@
         </td>
     {%- endfor -%}
 {%- endmacro -%}
-{% macro sitelink(dbname, text, extra_url='') -%}
-    <a href="{{ sites[dbname] }}{{ extra_url }}">{{ text }}</a>
+{% macro sitelink(dbname, text, extra_url='', query='') -%}
+    <a href="{{ sites[dbname] }}{{ extra_url }}{% if query %}?{{ query|urlencode }}{% endif %}">{{ text }}</a>
 {%- endmacro -%}
 
 <!DOCTYPE html>
@@ -62,15 +62,15 @@
         {%- for site in counts %}
             <tr class="{{ loop.cycle('odd', 'even') }}">
                 <th rowspan="3">{{ sitelink(site, site) }}</th>
-                <th>{{ sitelink(site, 'eligible', '/wiki/Special:RecentChanges?days=30&tagfilter=editcheck-references') }}</th>
+                <th>{{ sitelink(site, 'eligible', '/wiki/Special:RecentChanges', {'days':30,'tagfilter':'editcheck-references'}) }}</th>
                 {{ sitefield(site, 'eligible') }}
             </tr>
             <tr class="{{ loop.cycle('odd', 'even') }}">
-                <th>{{ sitelink(site, 'activated', '/wiki/Special:RecentChanges?days=30&tagfilter=editcheck-references-activated') }}</th>
+                <th>{{ sitelink(site, 'activated', '/wiki/Special:RecentChanges', {'days':30,'tagfilter':'editcheck-references|editcheck-references-activated'}) }}</th>
                 {{ sitefield(site, 'activated') }}
             </tr>
             <tr class="{{ loop.cycle('odd', 'even') }}">
-                <th>{{ sitelink(site, 'added', '/wiki/Special:RecentChanges?days=30&tagfilter=editcheck-newreference') }}</th>
+                <th>{{ sitelink(site, 'added', '/wiki/Special:RecentChanges', {'days':30,'tagfilter':'editcheck-references|editcheck-newreference'}) }}</th>
                 {{ sitefield(site, 'added') }}
             </tr>
         {%- endfor %}
