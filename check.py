@@ -43,6 +43,9 @@ def fetch(from_date: datetime.date = False, to_date: datetime.date = False, only
     connection = database.get()
     cursor = connection.cursor()
 
+    to_date = to_date or _yesterday()
+    from_date = from_date or _yesterday()
+
     response = query_continue(METAWIKI,
         action='sitematrix',
         smtype='language',
@@ -78,8 +81,8 @@ def fetch(from_date: datetime.date = False, to_date: datetime.date = False, only
             rctag='editcheck-references',
             rcprop='ids|timestamp|title|tags|sizes',
             # recent changes goes backwards, so the start is the most-recent date
-            rcstart=(to_date or _yesterday()).isoformat() + 'T23:59:59Z',
-            rcend=(from_date or _yesterday()).isoformat() + 'T00:00:00Z',
+            rcstart=to_date.isoformat() + 'T23:59:59Z',
+            rcend=from_date.isoformat() + 'T00:00:00Z',
             rclimit='100',
         )
         # print(recentchanges)
