@@ -15,6 +15,9 @@ def index():
     from_date = datetime.date.today() - datetime.timedelta(days=31)
     to_date = datetime.date.today() - datetime.timedelta(days=1)
 
+    earliest, latest = database.fetch_date_bounds()
+    to_date = min(latest, to_date)
+    from_date = max(earliest, from_date)
     counts = database.fetch_sitecounts(from_date, to_date)
     sites = database.fetch_sites()
 

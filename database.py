@@ -17,6 +17,13 @@ def get():
     return conn
 
 
+def fetch_date_bounds():
+    conn = get()
+    result = conn.execute("SELECT MAX(date), MIN(date) FROM sitecounts")
+    latest, earliest = result.fetchone()
+    return datetime.date.fromisoformat(earliest), datetime.date.fromisoformat(latest)
+
+
 def fetch_sitecounts(from_date: datetime.date, to_date: datetime.date):
     conn = get()
     sites = {}
