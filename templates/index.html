@@ -96,6 +96,15 @@
         <li class="{{ all and 'active' or '' }}"><a href="/?all=1">All sites</a></li>
         <li class="{{ all and ' ' or 'active' }}"><a href="/">Activated sites</a></li>
     </ul>
+    <details>
+        <summary>Definitions</summary>
+        <dl>
+            <dd>Eligible</dd><dt>Revisions which were eligible to be shown edit check based on their content (tagged with: editcheck-references)</dt>
+            <dd>Activated</dd><dt>Revisions which actually had edit check shown (tagged with: editcheck-references-activated)</dt>
+            <dd>Added</dd>Revisions which were eligible to be shown edit check <em>and</em> had some references added (tagged with: editcheck-newreference)</dl>
+            <dd>Activated sites</dd><dt>Sites which contain at least one activation of edit check in the date-range</dt>
+        </dl>
+    </details>
     <table>
         <thead><th colspan="2">Site</th><th>Total</th>{% for date in dates %}<th>{{ date }}</th>{% endfor %}</thead>
         <tbody>
