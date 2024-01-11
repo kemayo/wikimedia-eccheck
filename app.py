@@ -3,19 +3,35 @@
 import datetime
 import flask
 from flask import render_template, request
+from werkzeug.routing import BaseConverter, ValidationError
 
 import database
 
 
+class DateConverter(BaseConverter):
+    regex = r'\d{4}-\d{2}-\d{2}'
+    def to_python(self, value):
+        try:
+            return datetime.date.fromisoformat(value)
+        except ValueError:
+            raise ValidationError()
+
+    def to_url(self, value):
+        return value.isoformat()
+
+
 app = flask.Flask(__name__)
+app.url_map.converters['date'] = DateConverter
 
 
 @app.route('/')
-def index():
-    from_date = datetime.date.today() - datetime.timedelta(days=31)
-    to_date = datetime.date.today() - datetime.timedelta(days=1)
-
+@app.route('/<date:from_date>:<date:to_date>')
+def dashboard(from_date=False, to_date=False):
     earliest, latest = database.fetch_date_bounds()
+
+    from_date = from_date or (latest - datetime.timedelta(days=30))
+    to_date = to_date or latest  # - datetime.timedelta(days=0)
+
     to_date = min(latest, to_date)
     from_date = max(earliest, from_date)
     counts = database.fetch_sitecounts(from_date, to_date)
