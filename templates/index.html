@@ -87,15 +87,36 @@
         ul li a {
             text-decoration: none;
         }
+        nav {
+            display: flex;
+            align-items: center;
+        }
+        nav a {
+            text-decoration: none;
+        }
+        nav h2 {
+            margin: 5px 20px;
+        }
     </style>
 </head>
 <body>
     <h1>Edit Check usage</h1>
-    <h2>{{ dates[0] }} to {{ dates[-1] }}</h2>
-    <ul>
-        <li class="{{ all and 'active' or '' }}"><a href="/?all=1">All sites</a></li>
-        <li class="{{ all and ' ' or 'active' }}"><a href="/">Activated sites</a></li>
-    </ul>
+    {%- set url_args = {'all': all and '1' or '0'} -%}
+    <header>
+        <nav>
+            {%- if from_date > earliest -%}
+            <a rel="prev" href="{{ url_for('dashboard', to_date=from_date, **url_args) }}">⬅️</a>
+            {%- endif -%}
+            <h2>{{ dates[0] }} to {{ dates[-1] }}</h2>
+            {%- if forward_date > to_date -%}
+            <a rel="next" href="{{ url_for('dashboard', to_date=forward_date, **url_args) }}">➡️</a>
+            {%- endif -%}
+        </nav>
+        <ul>
+            <li class="{{ all and 'active' or '' }}"><a href="{{ url_for('dashboard', to_date=to_date, all=1) }}">All sites</a></li>
+            <li class="{{ all and ' ' or 'active' }}"><a href="{{ url_for('dashboard', to_date=to_date) }}">Activated sites</a></li>
+        </ul>
+    </header>
     <details>
         <summary>Definitions</summary>
         <dl>
