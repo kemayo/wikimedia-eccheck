@@ -53,8 +53,5 @@ def site_activated_filter(sites, allow_all):
         return sites
     def has_activated(item):
         dbname, counts = item
-        for count in counts.values():
-            if count['activated']:
-                return True
-        return False
+        return counts['total']['activated'] > 0
     return dict((filter(has_activated, sites.items())))

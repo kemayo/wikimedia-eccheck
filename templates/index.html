@@ -1,16 +1,24 @@
-{% macro sitefield(site, key) -%}
+{%- macro gradient(val, max, color='rgba(0,0,0,0.2)') -%}
+    {%- if max -%}
+        {%- set percent = 100 * val // max -%}
+        linear-gradient(0deg, {{ color }}, {{ color }} {{ percent }}%, transparent {{ percent }}%)
+    {%- else -%}
+        transparent
+    {%- endif -%}
+{%- endmacro -%}
+{%- macro sitefield(site, key) -%}
     <td class="total">{{ counts[site].total[key] or 0 }}</td>
     {%- for date in dates -%}
-        <td>
-        {%- if counts[site][date] -%}
-            {{ counts[site][date][key] }}
+        {%- if counts[site]['data'][date] -%}
+            <td style="background: {{ gradient(counts[site]['data'][date][key], counts[site]['max'][key]) }}">
+                {{ counts[site]['data'][date][key] }}
+            </td>
         {%- else -%}
-            -
+            <td>-</td>
         {%- endif -%}
-        </td>
     {%- endfor -%}
 {%- endmacro -%}
-{% macro sitelink(dbname, text, extra_url='', query='') -%}
+{%- macro sitelink(dbname, text, extra_url='', query='') -%}
     <a href="{{ sites[dbname] }}{{ extra_url }}{% if query %}?{{ query|urlencode }}{% endif %}">{{ text }}</a>
 {%- endmacro -%}
 
